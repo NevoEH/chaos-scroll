@@ -13,7 +13,6 @@ def chaos_scroll():
         else:
             stat_change = random.randint(-5, 5)
             result = f"Chaos Scroll has passed and your item got a {stat_change:+d} stats !"
-
         return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500

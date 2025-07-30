@@ -4,7 +4,7 @@
   "builds": [
     { "src": "api/handler.py", "use": "@vercel/python" },
     { "src": "index.html", "use": "@vercel/static" },
-    { "src": "assets/scroll.wav", "use": "@vercel/static" }
+    { "src": "assets/(.*)", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/api/handler", "dest": "/api/handler.py" },

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,44 +38,35 @@
     }
     #result {
       margin-top: 30px;
-      font-size: 22px;
+      font-size: 16px;
       min-height: 40px;
     }
-    #result.glow-green {
-      animation: glowGreen 1.5s ease-in-out forwards;
-      color: #7fff7f;
+    /* Glow for pass (yellow) */
+    #result.pass {
+      animation: glow-yellow 1.5s ease-in-out forwards;
+      color: #ffff66;
       font-weight: bold;
-      text-shadow: 0 0 10px #7fff7f, 0 0 20px #7fff7f;
+      text-shadow: 0 0 10px #ffff66, 0 0 20px #ffff66;
     }
-    #result.glow-black {
-      animation: glowBlack 1.5s ease-in-out forwards;
-      color: #1a1a1a;
+    /* Glow for fail (red) */
+    #result.fail {
+      animation: glow-red 1.5s ease-in-out forwards;
+      color: #ff0000;
       font-weight: bold;
-      text-shadow: 0 0 10px #1a1a1a, 0 0 20px #1a1a1a;
-    }
-    #result.glow-yellow {
-      animation: glowYellow 1.5s ease-in-out forwards;
-      color: #ffcc00;
-      font-weight: bold;
-      text-shadow: 0 0 10px #ffcc00, 0 0 20px #ffcc00;
-    }
-    @keyframes glowGreen {
-      0% { text-shadow: none; }
-      50% { text-shadow: 0 0 8px #7fff7f, 0 0 16px #7fff7f; }
-      100% { text-shadow: 0 0 4px #7fff7f; }
-    }
-    @keyframes glowBlack {
-      0% { text-shadow: none; }
-      50% { text-shadow: 0 0 8px #1a1a1a, 0 0 16px #1a1a1a; }
-      100% { text-shadow: 0 0 4px #1a1a1a; }
-    }
-    @keyframes glowYellow {
-      0% { text-shadow: none; }
-      50% { text-shadow: 0 0 8px #ffcc00, 0 0 16px #ffcc00; }
-      100% { text-shadow: 0 0 4px #ffcc00; }
+      text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
     }
     #scroll-btn.scrolling {
       animation: shake 0.5s infinite;
+    }
+    @keyframes glow-yellow {
+      0% { text-shadow: none; }
+      50% { text-shadow: 0 0 8px #ffff66, 0 0 16px #ffff66; }
+      100% { text-shadow: 0 0 4px #ffff66; }
+    }
+    @keyframes glow-red {
+      0% { text-shadow: none; }
+      50% { text-shadow: 0 0 8px #ff0000, 0 0 16px #ff0000; }
+      100% { text-shadow: 0 0 4px #ff0000; }
     }
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
@@ -89,25 +81,25 @@
 </head>
 <body>
   <h1>Chaos Scroll Simulator</h1>
-  <!-- Replace with your uploaded image URL -->
-  <img id="scroll-icon" src="https://bbb.hidden-street.net/sites/bbb.hidden-street.net/files/sites/global.hidden-street.net/files/items/scroll027.png?1247757669" alt="Chaos Scroll" width="64" />
-  
+  <img id="scroll-icon" src="https://maplestory.io/api/gms/latest/item/2049100/icon" alt="Chaos Scroll" width="64" />
   <div id="stage">Stage 1: Ready</div>
   <button id="scroll-btn">Use Chaos Scroll</button>
   <div id="result"></div>
 
-  <audio id="scroll-sound" src="/assets/scroll.wav" preload="auto"></audio>
+  <audio id="sound-success" src="/assets/success.mp3" preload="auto"></audio>
+  <audio id="sound-fail" src="/assets/fail.mp3" preload="auto"></audio>
 
   <script>
     const btn = document.getElementById('scroll-btn');
     const resultDiv = document.getElementById('result');
     const stageDiv = document.getElementById('stage');
-    const scrollSound = document.getElementById('scroll-sound');
+    const soundSuccess = document.getElementById('sound-success');
+    const soundFail = document.getElementById('sound-fail');
 
     btn.addEventListener('click', async () => {
       stageDiv.innerText = "Stage 2: Scrolling...";
       resultDiv.innerText = "";
-      scrollSound.play();
+      resultDiv.className = "";
 
       btn.disabled = true;
       btn.classList.add('scrolling');
@@ -122,13 +114,13 @@
           stageDiv.innerText = "Stage 3: Result";
 
           if (data.result) {
-            // Check the result text for fail/pass and apply appropriate glow class
+            resultDiv.innerText = data.result;
             if (data.result.includes("failed")) {
-              resultDiv.innerText = data.result;
-              resultDiv.classList.add('glow-black');
-            } else if (data.result.includes("passed")) {
-              resultDiv.innerText = data.result;
-              resultDiv.classList.add('glow-yellow');
+              resultDiv.classList.add('fail');
+              soundFail.play();
+            } else {
+              resultDiv.classList.add('pass');
+              soundSuccess.play();
             }
           } else {
             resultDiv.innerText = 'Unexpected response.';
@@ -136,7 +128,7 @@
         } catch (e) {
           resultDiv.innerText = 'Network error: ' + e.message;
         }
-      }, 2000); // 2 seconds animation
+      }, 2000);
     });
   </script>
 </body>
