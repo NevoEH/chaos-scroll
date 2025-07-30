@@ -1,6 +1,7 @@
 import random
+import json
 
-def handler(request, response):
+def handler(request):
     try:
         success = random.choices(['fail', 'pass'], weights=[40, 60])[0]
         if success == 'fail':
@@ -9,6 +10,14 @@ def handler(request, response):
             stat_change = random.randint(-5, 5)
             result = f"Chaos Scroll has passed and your item got a {stat_change:+d} stats !"
 
-        return response.json({"result": result})
+        return {
+            "statusCode": 200,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps({"result": result})
+        }
     except Exception as e:
-        return response.json({"error": str(e)}, status=500)
+        return {
+            "statusCode": 500,
+            "headers": {"Content-Type": "application/json"},
+            "body": json.dumps({"error": str(e)})
+        }
