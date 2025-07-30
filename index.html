@@ -98,6 +98,8 @@
   // Prime audio by playing silently when user clicks
   btn.addEventListener('click', async () => {
     // Prime both sounds muted (user gesture context)
+    soundSuccess.load();
+    soundFail.load();
     soundSuccess.volume = 0;
     soundSuccess.play().catch(()=>{});
     soundFail.volume = 0;
