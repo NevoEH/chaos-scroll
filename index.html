@@ -1,58 +1,114 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Chaos Scroll Simulator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Press Start 2P', monospace;
       text-align: center;
       margin-top: 80px;
+      background: #0b1a2b;
+      color: #c0d8f7;
     }
     button {
       font-size: 20px;
       padding: 10px 20px;
       cursor: pointer;
+      background: #274c77;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      transition: background 0.3s ease;
+    }
+    button:hover:not(:disabled) {
+      background: #3467c1;
+    }
+    button:disabled {
+      background: #999;
+      cursor: not-allowed;
+    }
+    #stage {
+      font-size: 18px;
+      color: #88aaff;
+      margin-bottom: 20px;
+      min-height: 24px;
     }
     #result {
       margin-top: 30px;
-      font-size: 24px;
+      font-size: 22px;
+      min-height: 40px;
+    }
+    #result.glow {
+      animation: glow 1.5s ease-in-out forwards;
+      color: #7fff7f;
+      font-weight: bold;
+      text-shadow: 0 0 10px #7fff7f, 0 0 20px #7fff7f;
+    }
+    #scroll-btn.scrolling {
+      animation: shake 0.5s infinite;
+    }
+    @keyframes glow {
+      0% { text-shadow: none; }
+      50% { text-shadow: 0 0 8px #7fff7f, 0 0 16px #7fff7f; }
+      100% { text-shadow: 0 0 4px #7fff7f; }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    #scroll-icon {
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 3px #00ff00);
     }
   </style>
 </head>
 <body>
   <h1>Chaos Scroll Simulator</h1>
-
-  <button onclick="useChaos()">Use Chaos Scroll</button>
-
+  <img id="scroll-icon" src="https://maplestory.io/api/gms/latest/item/2049100/icon" alt="Chaos Scroll" width="64" />
+  <div id="stage">Stage 1: Ready</div>
+  <button id="scroll-btn">Use Chaos Scroll</button>
   <div id="result"></div>
 
+  <audio id="scroll-sound" src="/assets/scroll.wav" preload="auto"></audio>
+
   <script>
-    async function useChaos() {
-      const resultDiv = document.getElementById('result');
-      resultDiv.innerText = "Loading...";
+    const btn = document.getElementById('scroll-btn');
+    const resultDiv = document.getElementById('result');
+    const stageDiv = document.getElementById('stage');
+    const scrollSound = document.getElementById('scroll-sound');
 
-      try {
-        const res = await fetch('/api/handler');
+    btn.addEventListener('click', async () => {
+      stageDiv.innerText = "Stage 2: Scrolling...";
+      resultDiv.innerText = "";
+      scrollSound.play();
 
-        if (!res.ok) {
-          resultDiv.innerText = `API Error: ${res.status} ${res.statusText}`;
-          return;
+      btn.disabled = true;
+      btn.classList.add('scrolling');
+
+      setTimeout(async () => {
+        try {
+          const res = await fetch('/api/handler');
+          const data = await res.json();
+
+          btn.disabled = false;
+          btn.classList.remove('scrolling');
+          stageDiv.innerText = "Stage 3: Result";
+
+          if (data.result) {
+            resultDiv.innerText = data.result;
+            resultDiv.classList.add('glow');
+          } else {
+            resultDiv.innerText = 'Unexpected response.';
+          }
+        } catch (e) {
+          resultDiv.innerText = 'Network error: ' + e.message;
         }
-
-        const data = await res.json();
-
-        if (data.result) {
-          resultDiv.innerText = data.result;
-        } else if (data.error) {
-          resultDiv.innerText = `Error: ${data.error}`;
-        } else {
-          resultDiv.innerText = "Unexpected response from server.";
-        }
-      } catch (error) {
-        resultDiv.innerText = `Network error: ${error.message}`;
-      }
-    }
+      }, 2000); // 2 seconds animation
+    });
   </script>
 </body>
 </html>
