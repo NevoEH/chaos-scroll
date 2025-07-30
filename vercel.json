@@ -4,11 +4,11 @@
   "builds": [
     { "src": "api/handler.py", "use": "@vercel/python" },
     { "src": "index.html", "use": "@vercel/static" },
-    { "src": "/assets/(.*)", "use": "@vercel/static" }
+    { "src": "public/assets/(.*)", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/api/handler", "dest": "/api/handler.py" },
-    { "src": "/assets/(.*)", "dest": "/assets/$1" },
+    { "src": "public/assets/(.*)", "dest": "/assets/$1" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
