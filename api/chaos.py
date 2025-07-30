@@ -12,3 +12,4 @@ def handler(request, response):
         return response.json({"result": result})
     except Exception as e:
         return response.json({"error": str(e)}, status=500)
+handler
