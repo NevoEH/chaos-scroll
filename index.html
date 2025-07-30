@@ -1,27 +1,60 @@
-<script>
-  async function useChaos() {
-    const resultDiv = document.getElementById('result');
-    resultDiv.innerText = "Loading...";
-
-    try {
-      const res = await fetch('/api/chaos');
-      
-      if (!res.ok) {
-        resultDiv.innerText = `API Error: ${res.status} ${res.statusText}`;
-        return;
-      }
-      
-      const data = await res.json();
-
-      if (data.result) {
-        resultDiv.innerText = data.result;
-      } else if (data.error) {
-        resultDiv.innerText = `Error: ${data.error}`;
-      } else {
-        resultDiv.innerText = "Unexpected response from server.";
-      }
-    } catch (error) {
-      resultDiv.innerText = `Network error: ${error.message}`;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chaos Scroll Simulator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 80px;
     }
-  }
-</script>
+    button {
+      font-size: 20px;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chaos Scroll Simulator</h1>
+
+  <!-- Button to trigger the scroll -->
+  <button onclick="useChaos()">Use Chaos Scroll</button>
+
+  <!-- Where result will be displayed -->
+  <div id="result"></div>
+
+  <script>
+    async function useChaos() {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerText = "Loading...";
+
+      try {
+        const res = await fetch('/api/chaos');
+
+        if (!res.ok) {
+          resultDiv.innerText = `API Error: ${res.status} ${res.statusText}`;
+          return;
+        }
+
+        const data = await res.json();
+
+        if (data.result) {
+          resultDiv.innerText = data.result;
+        } else if (data.error) {
+          resultDiv.innerText = `Error: ${data.error}`;
+        } else {
+          resultDiv.innerText = "Unexpected response from server.";
+        }
+      } catch (error) {
+        resultDiv.innerText = `Network error: ${error.message}`;
+      }
+    }
+  </script>
+</body>
+</html>
