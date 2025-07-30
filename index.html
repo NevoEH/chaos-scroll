@@ -85,8 +85,8 @@
   <button id="scroll-btn">Use Chaos Scroll</button>
   <div id="result"></div>
 
-  <audio id="sound-success" src="/assets/success.mp3" preload="auto"></audio>
-  <audio id="sound-fail" src="/assets/fail.mp3" preload="auto"></audio>
+  <audio id="sound-success" src="public/assets/success.wav" preload="auto"></audio>
+  <audio id="sound-fail" src="public/assets/fail.mp3" preload="auto"></audio>
 
   <script>
   const btn = document.getElementById('scroll-btn');
@@ -97,13 +97,7 @@
 
   // Prime audio by playing silently when user clicks
   btn.addEventListener('click', async () => {
-    // Prime both sounds muted (user gesture context)
-    soundSuccess.load();
-    soundFail.load();
-    soundSuccess.volume = 0;
-    soundSuccess.play().catch(()=>{});
-    soundFail.volume = 0;
-    soundFail.play().catch(()=>{});
+
 
     stageDiv.innerText = "Stage 2: Scrolling...";
     resultDiv.innerText = "";
