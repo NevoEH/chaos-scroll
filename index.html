@@ -23,10 +23,8 @@
 <body>
   <h1>Chaos Scroll Simulator</h1>
 
-  <!-- Button to trigger the scroll -->
   <button onclick="useChaos()">Use Chaos Scroll</button>
 
-  <!-- Where result will be displayed -->
   <div id="result"></div>
 
   <script>
@@ -35,7 +33,7 @@
       resultDiv.innerText = "Loading...";
 
       try {
-        const res = await fetch('/api/chaos');
+        const res = await fetch('/api/handler');
 
         if (!res.ok) {
           resultDiv.innerText = `API Error: ${res.status} ${res.statusText}`;
