@@ -1,7 +1,11 @@
+# api/handler.py
+from flask import Flask, jsonify
 import random
-import json
 
-def handler(request):
+app = Flask(__name__)
+
+@app.route('/')
+def chaos_scroll():
     try:
         success = random.choices(['fail', 'pass'], weights=[40, 60])[0]
         if success == 'fail':
@@ -9,15 +13,6 @@ def handler(request):
         else:
             stat_change = random.randint(-5, 5)
             result = f"Chaos Scroll has passed and your item got a {stat_change:+d} stats !"
-
-        return {
-            "statusCode": 200,
-            "headers": {"Content-Type": "application/json"},
-            "body": json.dumps({"result": result})
-        }
+        return jsonify({"result": result})
     except Exception as e:
-        return {
-            "statusCode": 500,
-            "headers": {"Content-Type": "application/json"},
-            "body": json.dumps({"error": str(e)})
-        }
+        return jsonify({"error": str(e)}), 500
