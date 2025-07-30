@@ -81,7 +81,7 @@
 </head>
 <body>
   <h1>Chaos Scroll Simulator</h1>
-  <img id="scroll-icon" src="https://maplestory.io/api/gms/latest/item/2049100/icon" alt="Chaos Scroll" width="64" />
+  <img id="scroll-icon" src="/assets/chaos.png" alt="Chaos Scroll" width="64" />
   <div id="stage">Stage 1: Ready</div>
   <button id="scroll-btn">Use Chaos Scroll</button>
   <div id="result"></div>
@@ -117,9 +117,11 @@
             resultDiv.innerText = data.result;
             if (data.result.includes("failed")) {
               resultDiv.classList.add('fail');
+              soundFail.currentTime = 0;
               soundFail.play();
             } else {
               resultDiv.classList.add('pass');
+              soundFail.currentTime = 0;
               soundSuccess.play();
             }
           } else {
