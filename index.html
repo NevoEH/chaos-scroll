@@ -80,7 +80,7 @@
 </head>
 <body>
   <h1>Chaos Scroll Simulator</h1>
-  <img id="scroll-icon" src="/assets/chaos.jpg" alt="Chaos Scroll" width="64" />
+  <img id="scroll-icon" src="/assets/chaos.png" alt="Chaos Scroll" width="64" />
   <div id="stage">Stage 1: Ready</div>
   <button id="scroll-btn">Use Chaos Scroll</button>
   <div id="result"></div>
@@ -89,58 +89,59 @@
   <audio id="sound-fail" src="/assets/fail.mp3" preload="auto"></audio>
 
   <script>
-    const btn = document.getElementById('scroll-btn');
-    const resultDiv = document.getElementById('result');
-    const stageDiv = document.getElementById('stage');
-    const soundSuccess = document.getElementById('sound-success');
-    const soundFail = document.getElementById('sound-fail');
+  const btn = document.getElementById('scroll-btn');
+  const resultDiv = document.getElementById('result');
+  const stageDiv = document.getElementById('stage');
+  const soundSuccess = document.getElementById('sound-success');
+  const soundFail = document.getElementById('sound-fail');
 
-    // Preload & prime sounds to bypass autoplay restrictions
-    window.addEventListener('DOMContentLoaded', () => {
-      [soundSuccess, soundFail].forEach(sound => {
-        sound.load();
-        sound.volume = 0;
-        sound.play().then(() => sound.pause()).catch(() => {});
-        sound.volume = 1;
-      });
-    });
+  // Prime audio by playing silently when user clicks
+  btn.addEventListener('click', async () => {
+    // Prime both sounds muted (user gesture context)
+    soundSuccess.volume = 0;
+    soundSuccess.play().catch(()=>{});
+    soundFail.volume = 0;
+    soundFail.play().catch(()=>{});
 
-    btn.addEventListener('click', async () => {
-      stageDiv.innerText = "Stage 2: Scrolling...";
-      resultDiv.innerText = "";
-      resultDiv.className = "";
+    stageDiv.innerText = "Stage 2: Scrolling...";
+    resultDiv.innerText = "";
+    resultDiv.className = "";
 
-      btn.disabled = true;
-      btn.classList.add('scrolling');
+    btn.disabled = true;
+    btn.classList.add('scrolling');
 
-      setTimeout(async () => {
-        try {
-          const res = await fetch('/api/handler');
-          const data = await res.json();
+    setTimeout(async () => {
+      try {
+        const res = await fetch('/api/handler');
+        const data = await res.json();
 
-          btn.disabled = false;
-          btn.classList.remove('scrolling');
-          stageDiv.innerText = "Stage 3: Result";
+        btn.disabled = false;
+        btn.classList.remove('scrolling');
+        stageDiv.innerText = "Stage 3: Result";
 
-          if (data.result) {
-            resultDiv.innerText = data.result;
-            if (data.result.includes("failed")) {
-              resultDiv.classList.add('fail');
-              soundFail.currentTime = 0;
-              soundFail.play().catch(err => console.log(err));
-            } else {
-              resultDiv.classList.add('pass');
-              soundSuccess.currentTime = 0;
-              soundSuccess.play().catch(err => console.log(err));
-            }
+        if (data.result) {
+          resultDiv.innerText = data.result;
+          if (data.result.includes("failed")) {
+            resultDiv.classList.add('fail');
+            soundFail.pause();
+            soundFail.currentTime = 0;
+            soundFail.volume = 1;
+            soundFail.play().catch(err => console.log(err));
           } else {
-            resultDiv.innerText = 'Unexpected response.';
+            resultDiv.classList.add('pass');
+            soundSuccess.pause();
+            soundSuccess.currentTime = 0;
+            soundSuccess.volume = 1;
+            soundSuccess.play().catch(err => console.log(err));
           }
-        } catch (e) {
-          resultDiv.innerText = 'Network error: ' + e.message;
+        } else {
+          resultDiv.innerText = 'Unexpected response.';
         }
-      }, 2000);
-    });
+      } catch (e) {
+        resultDiv.innerText = 'Network error: ' + e.message;
+      }
+    }, 2000);
+  });
   </script>
 </body>
 </html>
