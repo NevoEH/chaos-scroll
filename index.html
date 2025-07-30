@@ -1,0 +1,37 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chaos Scroll Simulator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 80px;
+    }
+    button {
+      font-size: 20px;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chaos Scroll Simulator</h1>
+  <button onclick="useChaos()">Use Chaos Scroll</button>
+  <div id="result"></div>
+
+  <script>
+    async function useChaos() {
+      const res = await fetch('/api/chaos');
+      const data = await res.json();
+      document.getElementById('result').innerText = data.result;
+    }
+  </script>
+</body>
+</html>
